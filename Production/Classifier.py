@@ -1,14 +1,11 @@
-from keras.preprocessing.text import Tokenizer
 from nltk.stem.porter import PorterStemmer
-from nltk.util import pad_sequence
+from nltk.corpus import stopwords
 import numpy as np
 import os
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 import re
-import nltk
-from nltk.corpus import stopwords
 import pickle
 
 MODEL_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)),'LSTM_Bi_dropout.h5')
@@ -34,9 +31,9 @@ class LSTMPipeline(object):
         return self
     
     def transform(self):
-        self.txt = self.tok.texts_to_sequences(self.txt)
-        self.txt = pad_sequences([self.txt], padding='pre', maxlen=FIXED_LENGTH)
-        self.txt = np.array(self.txt)
+        # self.txt = np.array(self.txt)
+        self.txt = self.tok.texts_to_sequences([self.txt])
+        self.txt = pad_sequences(self.txt, padding='pre', maxlen=FIXED_LENGTH)
         return self
     
     def predict(self):
@@ -44,5 +41,5 @@ class LSTMPipeline(object):
         self.transform()
         return self.model.predict_classes(self.txt)
 
-# model = LSTMPipeline('A was Plane crashed near india-china border')
-# print(model.predict())
+model = LSTMPipeline('A was Plane crashed near india-china border')
+model.predict()
